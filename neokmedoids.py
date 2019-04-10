@@ -63,16 +63,19 @@ class Neo_k_medoids():
         min_row_idx = (np.arange(0, n*k, k) + object_cluster_distances.argmin(axis=1))
         filtered_idxs = min_distance_order[np.isin(min_distance_order, min_row_idx)]
         for index in filtered_idxs:
+          if (assignments>=(n-beta*n)):
+            break
           #convert flattended index to 2d index
           row = index//k
           col = index%k
           cluster_assignment[row, col] = 1
           assignments += 1
-          if (assignments>=(n-beta*n)):
-            break
+          
 
         #overlapping assignment of points to clusters
         for index in min_distance_order:
+          if (assignments>=(n+alpha*n)):
+            break
           row = index//k
           col = index%k
           #prevent an object from being assigned to a cluster already assigned
@@ -80,8 +83,6 @@ class Neo_k_medoids():
             continue
           cluster_assignment[row, col] = 1
           assignments += 1
-          if (assignments>=(n+alpha*n)):
-            break
 
         #Swap the medoid with the largest deviation impact
         current_cluster_deviation = (X[:, medoids]*cluster_assignment).sum(axis=0)
